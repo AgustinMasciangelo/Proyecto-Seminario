@@ -3,8 +3,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
-import java.util.Map; // Map para agrupar los consumos
-import java.util.stream.Collectors; //Streams de Java 8
+import java.util.Map;
+import java.util.stream.Collectors; 
 
 /**
  * CLASE: PanelReportes
@@ -38,7 +38,6 @@ public class PanelReportes extends JPanel {
         JPanel panelStats = new JPanel(new GridLayout(1, 3, 10, 10));
         panelStats.setBorder(BorderFactory.createTitledBorder("Reporte Global del Taller"));
         
-        // Creamos los JLabels con valores temporales
         lblTotalMaquinas = new JLabel("Máquinas: 0");
         lblTotalKWh = new JLabel("Consumo Total: 0.00 kWh");
         lblCostoTotal = new JLabel("Costo Total: $ 0.00");
@@ -48,7 +47,6 @@ public class PanelReportes extends JPanel {
         lblTotalKWh.setFont(fontStats);
         lblCostoTotal.setFont(fontStats);
         
-        // Centramos el texto
         lblTotalMaquinas.setHorizontalAlignment(SwingConstants.CENTER);
         lblTotalKWh.setHorizontalAlignment(SwingConstants.CENTER);
         lblCostoTotal.setHorizontalAlignment(SwingConstants.CENTER);
@@ -64,7 +62,12 @@ public class PanelReportes extends JPanel {
         lblTituloTabla.setFont(new Font("Arial", Font.BOLD, 16));
         
         String[] columnas = {"Máquina", "Total Horas", "Total Consumo (kWh)", "Total Costo ($)"};
-        this.tableModel = new DefaultTableModel(columnas, 0);
+        this.tableModel = new DefaultTableModel(columnas, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         this.tablaResumen = new JTable(tableModel);
         
         JScrollPane scrollPane = new JScrollPane(tablaResumen);
@@ -87,9 +90,7 @@ public class PanelReportes extends JPanel {
 
     /**
      * MÉTODO: actualizarReporte
-     * REQUISITO: Estructuras Repetitivas y Algoritmos.
-     * Este método se llama CADA VEZ que se muestra el panel.
-     * Lee TODOS los datos del "cerebro" y calcula los resúmenes.
+     * Lee TODOS los datos del cerebro y calcula los resúmenes.
      */
     public void actualizarReporte() {
         // OBTENER DATOS FRESCOS
@@ -99,8 +100,7 @@ public class PanelReportes extends JPanel {
         // Total de Máquinas
         int totalMaquinas = maquinas.size();
         
-        // REQUISITO: Bucle for-each y algoritmos
-        // Usamos bucles para sumar
+        // Calcular totales globales
         double totalKWhGlobal = 0;
         double totalCostoGlobal = 0;
         for (Consumo c : historial) {
@@ -113,16 +113,13 @@ public class PanelReportes extends JPanel {
         lblTotalKWh.setText(String.format("Consumo Total: %.2f kWh", totalKWhGlobal));
         lblCostoTotal.setText(String.format("Costo Total: $ %.2f", totalCostoGlobal));
         
-        // Borramos la tabla vieja
         tableModel.setRowCount(0);
         
-        // REQUISITO: Algoritmo de Agrupación usando Streams y Map
-        // Esto agrupa el historial por nombre de máquina y suma sus valores
+        // Algoritmo de Agrupación
         Map<String, List<Consumo>> consumosPorMaquina = historial.stream()
-                .collect(Collectors.groupingBy(c -> c.getMaquina().getNombre()));
+                .collect(Collectors.groupingBy(c -> c.getNombreMaquina()));
 
-        // REQUISITO: Bucle for-each
-        // Ahora recorremos el mapa de máquinas agrupadas
+        // Recorremos el mapa de máquinas agrupadas
         for (String nombreMaquina : consumosPorMaquina.keySet()) {
             
             List<Consumo> consumosDeEstaMaquina = consumosPorMaquina.get(nombreMaquina);

@@ -34,13 +34,12 @@ public class PanelMaquinas extends JPanel {
      */
     public PanelMaquinas(SimuladorTallerGUI mainApp) {
         this.mainApp = mainApp;
-        // Obtenemos la instancia del "cerebro" desde la ventana principal
+        // Obtenemos la instancia del cerebro desde la ventana principal
         this.sistema = mainApp.getSistema(); 
 
         // CONFIGURAR LAYOUT
-        // Usamos BorderLayout: Formulario al NORTE, Tabla al CENTRO, Botón al SUR.
         this.setLayout(new BorderLayout(10, 10));
-        this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Margen
+        this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); 
 
        // CREAR PANEL DEL FORMULARIO (NORTE)
         JPanel panelFormulario = new JPanel(new GridBagLayout());
@@ -78,18 +77,16 @@ public class PanelMaquinas extends JPanel {
         // CREAR PANEL DE LA TABLA (CENTRO)
         // REQUISITO: Creación de Objetos
         
-        // a. Definir las columnas
+        // Definir las columnas
         String[] columnas = {"Nombre", "Potencia (W)", "Estado"};
         
-        // b. Crear el "Modelo de la Tabla".
-        // El Modelo es el objeto que REALMENTE contiene los datos.
-        // La JTable es solo la parte "visual".
-        this.tableModel = new DefaultTableModel(columnas, 0); // 0 filas iniciales
+        // Crear el "Modelo de la Tabla".
+        this.tableModel = new DefaultTableModel(columnas, 0); 
         
-        // c. Crear la JTable y pasarle el modelo
+        // Crear la JTable y pasarle el modelo
         this.tablaMaquinas = new JTable(tableModel);
         
-        // d. Poner la tabla dentro de un JScrollPane
+        // Poner la tabla dentro de un JScrollPane
         // Esto hace que aparezcan las barras de scroll si hay muchas filas.
         JScrollPane scrollPane = new JScrollPane(tablaMaquinas);
         
@@ -97,7 +94,7 @@ public class PanelMaquinas extends JPanel {
         this.add(scrollPane, BorderLayout.CENTER);
 
         // CREAR PANEL DE NAVEGACIÓN (SUR)
-        JPanel panelSur = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // Alinear a la derecha
+        JPanel panelSur = new JPanel(new FlowLayout(FlowLayout.RIGHT)); 
         this.btnVolver = new JButton("Volver al Menú");
         panelSur.add(btnVolver);
         
@@ -119,13 +116,13 @@ public class PanelMaquinas extends JPanel {
      * y actualizar la tabla.
      */
     private void agregarMaquina() {
-        // 1. Obtener los datos de los campos de texto
-        String nombre = txtNombre.getText().trim(); // .trim() quita espacios en blanco
+        // Obtener los datos de los campos de texto
+        String nombre = txtNombre.getText().trim(); 
         String potenciaStr = txtPotencia.getText().trim();
         
         // REQUISITOS: Manejo de Excepciones y Estructuras de Control (try-catch)
         try {
-            // 2. Validar entrada (aquí, no en el cerebro)
+            // Validar entrada (aquí, no en el cerebro)
             if (nombre.isEmpty() || potenciaStr.isEmpty()) {
                 throw new MaquinaException("El nombre y la potencia son obligatorios.");
             }
@@ -139,14 +136,13 @@ public class PanelMaquinas extends JPanel {
                 throw new MaquinaException("La potencia debe ser un número válido.");
             }
 
-            // 3. Llamar al "Cerebro" (SistemaGestion)
-            // Aquí es donde llamamos a la lógica de POO que ya creamos
+            // Llamar al cerebro 
             sistema.agregarMaquina(nombre, potencia);
             
-            // 4. Si todo salió bien, actualizar la tabla
+            // Si todo salió bien, actualizar la tabla
             actualizarTabla();
             
-            // 5. Limpiar los campos de texto
+            // Limpiar los campos de texto
             txtNombre.setText("");
             txtPotencia.setText("");
             
@@ -158,8 +154,6 @@ public class PanelMaquinas extends JPanel {
 
         } catch (MaquinaException ex) {
             // REQUISITO: Manejo de Excepciones
-            // Si el "cerebro" (o nuestra validación) lanzó una alarma,
-            // la capturamos aquí y la mostramos al usuario.
             JOptionPane.showMessageDialog(this, 
                 ex.getMessage(), // Mostramos el mensaje de la excepción
                 "Error al Agregar Máquina", 
@@ -169,18 +163,18 @@ public class PanelMaquinas extends JPanel {
 
     /**
      * MÉTODO: actualizarTabla
-     * REQUISITO: Estructuras Repetitivas (bucle 'for')
+     * REQUISITO: Estructuras Repetitivas (bucle for)
      * Borra la tabla y la vuelve a llenar con los datos
-     * actualizados del "cerebro" (SistemaGestion).
+     * actualizados del cerebro (SistemaGestion).
      */
     public void actualizarTabla() {
-        // 1. Borrar todas las filas existentes
+        // Borrar todas las filas existentes
         tableModel.setRowCount(0); 
         
-        // 2. Obtener la lista fresca de máquinas desde el "cerebro"
+        // Obtener la lista fresca de máquinas desde el "cerebro"
         List<Maquina> maquinas = sistema.getMaquinas();
         
-        // 3. REQUISITO: Bucle 'for-each'
+        // REQUISITO: Bucle 'for-each'
         // Recorremos la lista y añadimos cada máquina como una fila nueva
         for (Maquina maquina : maquinas) {
             Object[] fila = {

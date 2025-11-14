@@ -1,42 +1,45 @@
-// Imports
-//'LocalDate' para guardar la fecha del registro
 import java.time.LocalDate;
 
 /**
- * CLASE: Consumo
- * REQUISITO: Abstracción y Encapsulamiento.
- * Esta clase "modelo" representa un único evento de consumo eléctrico.
- * Guarda QUÉ máquina se usó, CUÁNTAS horas, y el COSTO de ese uso.
+ * CLASE: Consumo 
+ * Ahora guarda el nombre de la máquina (String) en lugar del
+ * objeto Maquina, para facilitar la persistencia en la BD.
  */
 public class Consumo {
 
-    // ATRIBUTOS (private para Encapsulamiento)
-    private Maquina maquina;        // La máquina que se usó
+    // ATRIBUTOS
+    private String nombreMaquina; // Antes era 'Maquina maquina'
     private double horasDeUso;
     private double kwhConsumidos;
     private double costoDelConsumo;
-    private LocalDate fecha;        // La fecha en que se registró
+    private LocalDate fecha;
 
     /**
-     * MÉTODO: Constructor
-     * REQUISITO: Constructores.
-     * Crea un nuevo registro de consumo.
+     * MÉTODO: Constructor (Modificado)
      */
-    public Consumo(Maquina maquina, double horasDeUso, double kwhConsumidos, double costoDelConsumo) {
-        this.maquina = maquina;
+    public Consumo(String nombreMaquina, double horasDeUso, double kwhConsumidos, double costoDelConsumo) {
+        this.nombreMaquina = nombreMaquina; // Cambio
         this.horasDeUso = horasDeUso;
         this.kwhConsumidos = kwhConsumidos;
         this.costoDelConsumo = costoDelConsumo;
-        this.fecha = LocalDate.now(); // Guarda la fecha de hoy automáticamente
+        this.fecha = LocalDate.now(); 
+    }
+    
+    /**
+     * Constructor ADICIONAL para leer desde la BD (incluye la fecha)
+     */
+    public Consumo(String nombreMaquina, double horasDeUso, double kwhConsumidos, double costoDelConsumo, LocalDate fecha) {
+        this.nombreMaquina = nombreMaquina;
+        this.horasDeUso = horasDeUso;
+        this.kwhConsumidos = kwhConsumidos;
+        this.costoDelConsumo = costoDelConsumo;
+        this.fecha = fecha; 
     }
 
-    // MÉTODOS "GETTER"
-    // REQUISITO: Encapsulamiento.
-    // Damos acceso de SÓLO LECTURA a los datos del registro.
-    // No creamos "setters" porque un registro, una vez creado, no debe modificarse.
+    // MÉTODOS "GETTER
 
-    public Maquina getMaquina() {
-        return maquina;
+    public String getNombreMaquina() { // Antes era 'getMaquina()'
+        return nombreMaquina;
     }
 
     public double getHorasDeUso() {
@@ -54,4 +57,5 @@ public class Consumo {
     public LocalDate getFecha() {
         return fecha;
     }
-}    
+    
+} 

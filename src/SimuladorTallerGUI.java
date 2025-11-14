@@ -3,62 +3,73 @@ import javax.swing.*;
 import java.awt.*; 
 
 /**
- CLASE PRINCIPAL DE LA APP
- 1. Es el punto de entrada
- 2. Crea la ventana principal (JFrame).
- 3. Contiene la instancia del "cerebro" (SistemaGestion).
- 4. Administra el cambio de pantallas (con CardLayout).
+ * ---------------------------------------------------------------------
+ * CLASE: SimuladorTallerGUI (Versión Final TP4)
+ * ---------------------------------------------------------------------
+ * Esta es la clase PRINCIPAL de la aplicación.
+ * 1. Es el punto de entrada (contiene el 'main').
+ * 2. Crea la ventana principal (JFrame).
+ * 3. Contiene la instancia del "cerebro" (SistemaGestion).
+ * 4. Administra el cambio de pantallas (con CardLayout).
  */
 public class SimuladorTallerGUI {
 
-    // ATRIBUTOS
+    // --- ATRIBUTOS ---
     
     // Componentes de la Vista (GUI)
     private JFrame frame;
     private JPanel mainPanel;
     private CardLayout cardLayout;
 
-    // Referencia al "Cerebro" (Lógica)
+    // Referencia al cerebro
     private SistemaGestion sistema;
 
-    // Pantallas
+    // Los paneles
     private PanelMenuPrincipal panelMenuPrincipal;
     private PanelMaquinas panelMaquinas;
     private PanelTarifas panelTarifas;
     private PanelConsumos panelConsumos;
-    private PanelReportes panelReportes;  //"EN DESARROLLO" PARA EL TP N°4
-    private PanelOperarios panelOperarios; //"EN DESARROLLO" PARA EL TP N°4
+    private PanelReportes panelReportes;
+    private PanelOperarios panelOperarios;
     
-    
-   //Lo primero que se ejecuta cuando corremos el programa.
-     
+    /**
+     * ---------------------------------------------------------------------
+     * MÉTODO: main (Punto de Entrada)
+     * ---------------------------------------------------------------------
+     * Esto es lo primero que se ejecuta cuando se corre el programa.
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
+                // Llama al método que construye la GUI
                 new SimuladorTallerGUI().crearYMostrarGUI();
             }
         });
     }
 
-    
-    //Este método construye la ventana, crea el "cerebro"y prepara todos los paneles (pantallas).
-    
+    /**
+     * ---------------------------------------------------------------------
+     * MÉTODO: crearYMostrarGUI
+     * ---------------------------------------------------------------------
+     * Este método construye la ventana, crea el cerebro y
+     * prepara todos los paneles (pantallas).
+     */
     public void crearYMostrarGUI() {
         
-        // 1. Crear el Cerebro 
+        // 1. Crear el Cerebro
         this.sistema = new SistemaGestion();
 
-        // 2. Configurar la Ventana
+        // 2. Configurar la Ventana (el JFrame)
         this.frame = new JFrame("Simulador de Consumo Eléctrico - Taller CNC");
-        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Cierra el programa al tocar la 'X'
-        this.frame.setSize(new Dimension(800, 600)); // Resolucion de la ventana
-        this.frame.setLocationRelativeTo(null); // Centrar en la pantalla
+        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
+        this.frame.setSize(new Dimension(800, 600)); 
+        this.frame.setLocationRelativeTo(null); 
 
-        // 3. Configurar el "Director de Escena"
+        // 3. Configurar el director de escena (CardLayout)
         this.cardLayout = new CardLayout();
-        this.mainPanel = new JPanel(this.cardLayout); // El panel principal usa este layout
+        this.mainPanel = new JPanel(this.cardLayout); 
 
-        // Creacion de los panales
+        // --- 4. CREAR E INSTANCIAR LOS PANELES ---
         
         // Panel del Menú
         this.panelMenuPrincipal = new PanelMenuPrincipal(this);
@@ -76,27 +87,32 @@ public class SimuladorTallerGUI {
         this.panelConsumos = new PanelConsumos(this);
         this.mainPanel.add(panelConsumos, "PANEL_CONSUMOS");
 
-        // Panel de Reportes (En desarrollo)
-        // Lo creamos, pero el botón en el menú estará desactivado.
+        // Panel de Reportes (nuevo)
         this.panelReportes = new PanelReportes(this);
         this.mainPanel.add(panelReportes, "PANEL_REPORTES");
 
-        // Panel de Operarios
+        // Panel de Operarios (Placeholder)
         this.panelOperarios = new PanelOperarios(this);
         this.mainPanel.add(panelOperarios, "PANEL_OPERARIOS");
         
-        this.frame.add(mainPanel); // Añadimos el panel principal a la ventana
-        this.cardLayout.show(mainPanel, "MENU_PRINCIPAL"); // Mostramos el menú primero
+        
+        // --- 5. MONTAR Y MOSTRAR ---
+        this.frame.add(mainPanel); 
+        this.cardLayout.show(mainPanel, "MENU_PRINCIPAL"); 
         this.frame.setVisible(true); // Hacemos visible la ventana
     }
 
-    // Este método público es llamado por los paneles para cambiar de pantalla.
-    // También actualiza el contenido de los paneles que lo necesitan.
-     
+    /**
+     * ---------------------------------------------------------------------
+     * MÉTODO: mostrarPanel
+     * ---------------------------------------------------------------------
+     */
     public void mostrarPanel(String nombrePanel) {
         
         // Lógica de actualización de vistas:
-    
+        // Cada vez que mostramos un panel, nos aseguramos de que
+        // sus datos estén frescos 
+        
         if (nombrePanel.equals("PANEL_MAQUINAS")) {
             panelMaquinas.actualizarTabla();
         }
@@ -106,18 +122,19 @@ public class SimuladorTallerGUI {
         if (nombrePanel.equals("PANEL_CONSUMOS")) {
             panelConsumos.actualizarPanel();
         }
+        if (nombrePanel.equals("PANEL_REPORTES")) {
+            panelReportes.actualizarReporte();
+        }
         
-        // Código para el TP4 (actualmente desactivado)
-        // if (nombrePanel.equals("PANEL_REPORTES")) {
-        //     panelReportes.actualizarReporte();
-        // }
-        
-        // (PanelOperarios no necesita actualización)
-        
-        // Finalmente, le decimos al CardLayout que muestre el panel solicitado
+        // Le decimos al CardLayout que muestre el panel solicitado
         this.cardLayout.show(mainPanel, nombrePanel);
     }
-
+    
+    /**
+     * ---------------------------------------------------------------------
+     * MÉTODOS "GETTER" (Para que los paneles accedan al Cerebro y la Ventana)
+     * ---------------------------------------------------------------------
+     */
     public SistemaGestion getSistema() { 
         return this.sistema; 
     }
@@ -125,5 +142,4 @@ public class SimuladorTallerGUI {
     public JFrame getFrame() { 
         return this.frame; 
     }
-
-} 
+}

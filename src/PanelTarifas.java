@@ -25,10 +25,9 @@ public class PanelTarifas extends JPanel {
      */
     public PanelTarifas(SimuladorTallerGUI mainApp) {
         this.mainApp = mainApp;
-        this.sistema = mainApp.getSistema(); // Obtenemos el "cerebro"
+        this.sistema = mainApp.getSistema(); // Obtenemos el cerebro
 
         // CONFIGURAR LAYOUT
-        // Usaremos GridBagLayout para centrar un formulario pequeño
         this.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
@@ -93,7 +92,7 @@ public class PanelTarifas extends JPanel {
             
             double nuevaTarifa = Double.parseDouble(tarifaStr);
             
-            // 2. Llamar al "Cerebro" (que ya tiene la validación de > 0)
+            // 2. Llamar al cerebro (que ya tiene la validación de > 0)
             sistema.setTarifa(nuevaTarifa);
             
             // 3. Éxito: Mostrar mensaje y actualizar la vista
@@ -102,8 +101,8 @@ public class PanelTarifas extends JPanel {
                     "Éxito",
                     JOptionPane.INFORMATION_MESSAGE);
             
-            actualizarTarifaActual(); // Actualiza el JLabel
-            txtNuevaTarifa.setText(""); // Limpia el campo
+            actualizarTarifaActual(); 
+            txtNuevaTarifa.setText(""); 
             
         } catch (NumberFormatException e) {
             // Error si el usuario escribió "abc"
